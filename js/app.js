@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let menuIcon = document.querySelector('.menu-icon');
     let menu = document.querySelector('.menu');
     let menuLines = document.querySelectorAll('#menu-lines path')
+    let menuItems = document.querySelectorAll ('#menu ul li')
 
     menuIcon.addEventListener('click', () => {
         let isMenuVisible = menu.style.right === '0px';
@@ -15,13 +16,45 @@ document.addEventListener('DOMContentLoaded', () => {
         moveRightValue = '0px'
     }
 
-    anime({
-        targets: '#menu',
-        right: moveRightValue,
-        easing: 'easeInOutQuad',
-        duration: 500
-    })
+    if (isMenuVisible) {
+        anime ({
+            targets: '#menu',
+            translateX: [0, 250],
+            opacity: [1, 0],
+            easing: 'easeInOutQuad',
+            duration: 500,
+            delay: anime.stagger(50),
+            complete: () => { 
+                anime ({
+                    targets: '#menu',
+                    right: moveRightValue,
+                    easing: 'easeInOutQuad', 
+                    duration: 500
+                })
+            }
+        })
+            
+    }
 
+    else {
+        anime({
+            targets: '#menu',
+            right: moveRightValue,
+            easing: 'easeInOutQuad',
+            duration: 500,
+            complete: () => {
+                anime({
+                    targets: menuItems,
+                    translateX: [250, 0],
+                    opacity: [0, 1],
+                    easing: 'easeInOutQuad',
+                    duration: 500,
+                    delay: anime.stagger(50)
+                })
+            }
+            
+            })
+    }
 
     })
 
@@ -31,10 +64,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
             anime({
-                targets: '#menu',
-                right: '-250px',
+                targets: menuItems,
+                translateX: 250,
+                opacity: 0,
                 easing: 'easeInOutQuad',
-                duration: 500
+                duration: 300,
+                delay: anime.stagger(50),
+                complete: () => {
+                    anime ({
+                        targets: '#menu',
+                        right: '-250px',
+                        easing: 'easeInOutQuad',
+                        duration: 500
+                    })
+                }
+
             })
         }
 
